@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chemin de la finance</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .step-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .step-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chemin de la Finance</h1>
+    <div class="grid">
+        {% for i in range(1, 21) %}
+            <button class="step-btn" onclick="location.href='/etape{{ i }}'">Étape {{ i }}</button>
+        {% endfor %}
+    </div>
+</body>
+</html>
