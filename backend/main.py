@@ -15,8 +15,13 @@ templates = Jinja2Templates(directory="templates")
 async def home(request: Request):
     return templates.TemplateResponse("chemin.html", {"request": request})
 
-# Créer 20 routes (une par étape, elles renverront vers de futures pages)
-for i in range(1, 21):
+# Étape 1 -> vraie page
+@app.get("/etape1", response_class=HTMLResponse)
+async def etape1(request: Request):
+    return templates.TemplateResponse("1.html", {"request": request})
+
+# Étapes 2 à 20 -> placeholders
+for i in range(2, 21):
     async def placeholder(request: Request, step=i):
         return HTMLResponse(f"<h1>Page Étape {step} en construction...</h1>")
     app.add_api_route(f"/etape{i}", placeholder, methods=["GET"])
