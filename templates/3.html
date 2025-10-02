@@ -38,6 +38,19 @@
       transition: 0.3s;
     }
     .btn:hover { background: #45a049; }
+
+    /* Styles pour le jeu d'association */
+    .columns { display: flex; justify-content: center; gap: 50px; margin-top: 30px; }
+    .column {
+      width: 200px; min-height: 250px; border: 2px dashed #ccc;
+      border-radius: 8px; padding: 10px;
+    }
+    .affirmation {
+      background: #ddd; margin: 8px; padding: 10px;
+      border-radius: 6px; cursor: grab;
+    }
+    .correct { background: #4CAF50 !important; color: white; }
+    .wrong { background: #f44336 !important; color: white; }
   </style>
 </head>
 <body>
@@ -46,7 +59,7 @@
   <div id="page-intro" class="page active">
     <h1>Étape 3 : Les comptes pour investir</h1>
     <p>Il existe deux grands comptes pour investir en bourse : le CTO et le PEA.<br>
-       Tu vas découvrir leurs <b>avantages</b>, leurs <b>conditions</b> et leurs <b>règles de retrait</b>.</p>
+       Tu vas découvrir leurs <b>avantages</b>, leurs <b>conditions</b>, leurs <b>règles de retrait</b> et un petit <b>jeu</b> pour tester tes connaissances.</p>
     <button class="btn" onclick="nextPage('page-avantages')">➡ Suivant</button>
   </div>
 
@@ -110,6 +123,37 @@
         </div>
       </div>
     </div>
+    <button class="btn" onclick="nextPage('page-jeu')">➡ Suivant</button>
+  </div>
+
+  <!-- Page Jeu -->
+  <div id="page-jeu" class="page">
+    <h1>Jeu : CTO ou PEA ?</h1>
+    <p>Glisse chaque affirmation dans la bonne colonne puis clique sur Valider.</p>
+    
+    <div class="columns">
+      <div id="cto" class="column" ondrop="drop(event, 'CTO')" ondragover="allowDrop(event)">
+        <h3>CTO</h3>
+      </div>
+      <div id="pea" class="column" ondrop="drop(event, 'PEA')" ondragover="allowDrop(event)">
+        <h3>PEA</h3>
+      </div>
+    </div>
+
+    <div id="affirmations">
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Pas de plafond de versement</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Exonération d’impôt après 5 ans</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Actions du monde entier accessibles</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Plafond 150k €</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Retraits possibles à tout moment</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Réservé aux résidents fiscaux FR</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Chaque retrait = flat tax 30%</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Idéal pour préparer sa retraite</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Ouvert à tous sans condition</div>
+      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Retrait avant 5 ans = perte avantage fiscal</div>
+    </div>
+
+    <button class="btn" onclick="validate()">✅ Valider</button>
     <a href="/" class="btn">⬅ Retour au chemin</a>
   </div>
 
@@ -117,6 +161,28 @@
     function nextPage(id) {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById(id).classList.add("active");
+    }
+
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    function drop(ev, column) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      const el = document.getElementById(data);
+      ev.target.appendChild(el);
+    }
+
+    function validate() {
+      document.querySelectorAll(".affirmation").forEach(el => {
+        const parent = el.parentElement.id;
+        if (el.dataset.answer === parent.toUpperCase()) {
+          el.classList.add("correct");
+          el.classList.remove("wrong");
+        } else {
+          el.classList.add("wrong");
+          el.classList.remove("correct");
+        }
+      });
     }
   </script>
 
