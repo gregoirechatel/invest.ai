@@ -42,12 +42,21 @@
     /* Styles pour le jeu d'association */
     .columns { display: flex; justify-content: center; gap: 50px; margin-top: 30px; }
     .column {
-      width: 200px; min-height: 250px; border: 2px dashed #ccc;
-      border-radius: 8px; padding: 10px;
+      flex: 1;
+      min-height: 300px;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fafafa;
     }
     .affirmation {
-      background: #ddd; margin: 8px; padding: 10px;
-      border-radius: 6px; cursor: grab;
+      background: #eee;
+      margin: 8px auto;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: grab;
+      width: 180px;
+      font-size: 14px;
     }
     .correct { background: #4CAF50 !important; color: white; }
     .wrong { background: #f44336 !important; color: white; }
@@ -141,16 +150,16 @@
     </div>
 
     <div id="affirmations">
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Pas de plafond de versement</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Exonération d’impôt après 5 ans</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Actions du monde entier accessibles</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Plafond 150k €</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Retraits possibles à tout moment</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Réservé aux résidents fiscaux FR</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Chaque retrait = flat tax 30%</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Idéal pour préparer sa retraite</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Ouvert à tous sans condition</div>
-      <div class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Retrait avant 5 ans = perte avantage fiscal</div>
+      <div id="a1" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Pas de plafond de versement</div>
+      <div id="a2" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Exonération d’impôt après 5 ans</div>
+      <div id="a3" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Actions du monde entier accessibles</div>
+      <div id="a4" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Plafond 150k €</div>
+      <div id="a5" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Retraits possibles à tout moment</div>
+      <div id="a6" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Réservé aux résidents fiscaux FR</div>
+      <div id="a7" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Chaque retrait = flat tax 30%</div>
+      <div id="a8" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Idéal pour préparer sa retraite</div>
+      <div id="a9" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="CTO">Ouvert à tous sans condition</div>
+      <div id="a10" class="affirmation" draggable="true" ondragstart="drag(event)" data-answer="PEA">Retrait avant 5 ans = perte avantage fiscal</div>
     </div>
 
     <button class="btn" onclick="validate()">✅ Valider</button>
@@ -169,7 +178,11 @@
       ev.preventDefault();
       const data = ev.dataTransfer.getData("text");
       const el = document.getElementById(data);
-      ev.target.appendChild(el);
+      if (ev.target.classList.contains("column")) {
+        ev.target.appendChild(el);
+      } else if (ev.target.tagName === "H3") {
+        ev.target.parentElement.appendChild(el);
+      }
     }
 
     function validate() {
