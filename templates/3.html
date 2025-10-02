@@ -8,8 +8,8 @@
     h1 { margin-bottom: 20px; }
     p { margin-bottom: 20px; font-size: 18px; }
 
-    .hidden { display: none; }
-    .visible { display: block; }
+    .page { display: none; }
+    .page.active { display: block; }
 
     .cards { display: flex; justify-content: center; gap: 40px; margin-top: 20px; }
     .card {
@@ -26,7 +26,7 @@
       backface-visibility: hidden;
       display: flex; align-items: center; justify-content: center;
       border-radius: 8px; font-weight: bold; font-size: 16px;
-      padding: 10px;
+      padding: 10px; text-align: center;
     }
     .front { background: #4CAF50; color: white; }
     .back { background: white; color: #333; transform: rotateY(180deg); }
@@ -42,16 +42,16 @@
 </head>
 <body>
 
-  <!-- Intro -->
-  <div id="intro" class="visible">
+  <!-- Page Intro -->
+  <div id="page-intro" class="page active">
     <h1>Étape 3 : Les comptes pour investir</h1>
     <p>Il existe deux grands comptes pour investir en bourse : le CTO et le PEA.<br>
        Tu vas découvrir leurs <b>avantages</b>, leurs <b>conditions</b> et leurs <b>règles de retrait</b>.</p>
-    <button class="btn" onclick="showSection('avantages')">➡ Suivant</button>
+    <button class="btn" onclick="nextPage('page-avantages')">➡ Suivant</button>
   </div>
 
-  <!-- Avantages -->
-  <div id="avantages" class="hidden">
+  <!-- Page Avantages -->
+  <div id="page-avantages" class="page">
     <h1>Les avantages des deux types de compte</h1>
     <p>Clique sur les cartes pour voir les avantages.</p>
     <div class="cards">
@@ -68,11 +68,11 @@
         </div>
       </div>
     </div>
-    <button class="btn" onclick="showSection('conditions')">➡ Suivant</button>
+    <button class="btn" onclick="nextPage('page-conditions')">➡ Suivant</button>
   </div>
 
-  <!-- Conditions -->
-  <div id="conditions" class="hidden">
+  <!-- Page Conditions -->
+  <div id="page-conditions" class="page">
     <h1>Les conditions d’ouverture</h1>
     <p>Clique sur les cartes pour voir les conditions.</p>
     <div class="cards">
@@ -89,24 +89,24 @@
         </div>
       </div>
     </div>
-    <button class="btn" onclick="showSection('retraits')">➡ Suivant</button>
+    <button class="btn" onclick="nextPage('page-retraits')">➡ Suivant</button>
   </div>
 
-  <!-- Retraits -->
-  <div id="retraits" class="hidden">
+  <!-- Page Retraits -->
+  <div id="page-retraits" class="page">
     <h1>Les règles de retrait</h1>
     <p>Clique sur les cartes pour voir ce qui se passe quand tu retires ton argent.</p>
     <div class="cards">
       <div class="card" onclick="this.classList.toggle('flipped')">
         <div class="inner">
           <div class="front">CTO</div>
-          <div class="back">❌ Chaque retrait = flat tax 30%<br>✔ Retraits à tout moment<br>✔ Très flexible</div>
+          <div class="back">❌ Retrait = flat tax 30%<br>✔ Retraits à tout moment<br>✔ Très flexible</div>
         </div>
       </div>
       <div class="card" onclick="this.classList.toggle('flipped')">
         <div class="inner">
           <div class="front">PEA</div>
-          <div class="back">❌ Retrait avant 5 ans = perte fiscalité<br>✔ Après 5 ans = exonération d'impôt<br>✔ Idéal long terme</div>
+          <div class="back">❌ Retrait avant 5 ans = perte avantage fiscal<br>✔ Après 5 ans = exonération d'impôt<br>✔ Idéal long terme</div>
         </div>
       </div>
     </div>
@@ -114,10 +114,9 @@
   </div>
 
   <script>
-    function showSection(id) {
-      document.querySelectorAll("div").forEach(div => div.classList.add("hidden"));
-      document.getElementById(id).classList.remove("hidden");
-      document.getElementById(id).classList.add("visible");
+    function nextPage(id) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
     }
   </script>
 
