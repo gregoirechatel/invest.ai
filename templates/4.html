@@ -45,6 +45,19 @@
 
     <div id="result"></div>
 
+    <button class="btn" onclick="nextPage('page-etf')">➡ Et si tu investissais régulièrement ?</button>
+  </div>
+
+  <!-- PAGE 3 : INVESTISSEMENT LONG TERME -->
+  <div id="page-etf" class="page">
+    <h1>La puissance de l’investissement régulier 🌍</h1>
+    <p>Imaginons un salarié classique qui investit 100 € par mois dans un ETF Monde<br>
+       de ses 20 ans à ses 55 ans (35 ans d’investissement à 7 %/an en moyenne).</p>
+
+    <div id="chart-container"><canvas id="etfLong"></canvas></div>
+
+    <div id="long-result"></div>
+
     <a href="/" class="btn">⬅ Retour au chemin</a>
   </div>
 
@@ -53,16 +66,16 @@
     function nextPage(id) {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById(id).classList.add("active");
+
       if (id === "page-simulation") drawChart();
+      if (id === "page-etf") drawETFSimulation();
     }
 
     function drawChart() {
       const ctx = document.getElementById('etfChart').getContext('2d');
 
-      // Années de 2000 à 2025
       const years = Array.from({length: 26}, (_, i) => 2000 + i);
 
-      // Données inspirées de la réalité (100 € de départ)
       const etfWorld = [
         100,105,95,85,100,110,120,130,90,100,120,140,160,180,200,210,220,250,270,300,320,340,360,380,400,420
       ];
@@ -89,10 +102,7 @@
           legend: { position: 'bottom' }
         },
         scales: {
-          y: {
-            beginAtZero: false,
-            title: { display: true, text: 'Valeur (€)' }
-          },
+          y: { beginAtZero: false, title: { display: true, text: 'Valeur (€)' } },
           x: { title: { display: true, text: 'Année' } }
         }
       };
@@ -105,6 +115,52 @@
         📉 <b>Orange</b> : ~ 35 €<br><br>
         👉 <i>Un seul pari peut te rendre riche... ou te ruiner.  
         La diversification, elle, construit la richesse lentement mais sûrement.</i>`;
+    }
+
+    function drawETFSimulation() {
+      const ctx = document.getElementById('etfLong').getContext('2d');
+      const years = Array.from({length: 36}, (_, i) => 20 + i); // 20 à 55 ans
+
+      let value = 0;
+      const values = [];
+
+      for (let i = 0; i < 35; i++) {
+        // 100 €/mois = 1200 €/an
+        value = (value + 1200) * 1.07;
+        values.push(value);
+      }
+
+      const data = {
+        labels: years.map(y => y + " ans"),
+        datasets: [{
+          label: 'Évolution d’un investissement de 100€/mois à 7%/an',
+          data: values,
+          borderColor: '#2196F3',
+          borderWidth: 3,
+          fill: false,
+          tension: 0.2
+        }]
+      };
+
+      const options = {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Évolution d’un investissement régulier dans un ETF Monde', font: { size: 18 } },
+          legend: { position: 'bottom' }
+        },
+        scales: {
+          y: { beginAtZero: false, title: { display: true, text: 'Valeur cumulée (€)' } },
+          x: { title: { display: true, text: 'Âge' } }
+        }
+      };
+
+      new Chart(ctx, { type: 'line', data, options });
+
+      const final = Math.round(values[values.length - 1]).toLocaleString('fr-FR');
+      document.getElementById('long-result').innerHTML = `
+        💰 <b>Résultat final à 55 ans :</b> ${final} €<br><br>
+        👉 Avec 100 €/mois, ton capital dépasse les <b>${final} €</b> grâce aux intérêts composés.<br>
+        L’investissement régulier est la clé de la liberté financière. 🔑`;
     }
   </script>
 </body>
