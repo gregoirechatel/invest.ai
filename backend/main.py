@@ -22,6 +22,9 @@ async def etape1(request: Request):
 @app.get("/etape3", response_class=HTMLResponse)
 async def etape3(request: Request):
     return templates.TemplateResponse("3.html", {"request": request})
+@app.get("/etape4", response_class=HTMLResponse)
+async def etape4(request: Request):
+    return templates.TemplateResponse("4.html", {"request": request})
 
 # Étapes restantes -> placeholders
 for i in list(range(2, 21)):
