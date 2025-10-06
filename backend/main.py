@@ -29,3 +29,6 @@ for i in list(range(2, 21)):
         async def placeholder(request: Request, step=i):
             return HTMLResponse(f"<h1>Page Étape {step} en construction...</h1>")
         app.add_api_route(f"/etape{i}", placeholder, methods=["GET"])
+@app.get("/etape4", response_class=HTMLResponse)
+async def etape4(request: Request):
+    return templates.TemplateResponse("4.html", {"request": request})
