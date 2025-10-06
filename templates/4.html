@@ -5,93 +5,107 @@
   <title>Étape 4 - ETF vs Actions</title>
   <style>
     body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f8f8f8; }
-    h1 { margin-bottom: 10px; }
-    p { font-size: 18px; margin-bottom: 20px; }
-    button {
-      background-color: #4CAF50; color: white; border: none; padding: 10px 20px;
-      margin: 10px; border-radius: 6px; cursor: pointer; transition: 0.3s;
+    h1 { margin-bottom: 15px; }
+    p { font-size: 18px; margin-bottom: 25px; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .btn {
+      display: inline-block; margin-top: 25px;
+      padding: 12px 20px; background: #4CAF50; color: white;
+      border-radius: 6px; text-decoration: none; cursor: pointer;
+      transition: 0.3s;
     }
-    button:hover { background-color: #45a049; }
-    #chart { width: 80%; height: 300px; margin: 30px auto; border: 1px solid #ddd; background: white; }
+    .btn:hover { background: #45a049; }
+
+    #chart-container { width: 85%; height: 400px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 20px; }
     canvas { width: 100%; height: 100%; }
     #result { font-size: 20px; font-weight: bold; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-  <h1>Étape 4 : ETF vs Actions individuelles</h1>
-  <p>Investir dans une seule action, c’est un peu comme parier sur un cheval.<br>
-     Investir dans un ETF, c’est posséder tout l’hippodrome 🏇.<br><br>
-     Clique ci-dessous pour investir 100 € et vois ce qu’il se passe sur 10 ans :</p>
-
-  <div>
-    <button onclick="simulate('action')">Investir dans UNE ACTION 🎯</button>
-    <button onclick="simulate('etf')">Investir dans un ETF 🌍</button>
+  <!-- PAGE 1 : INTRO -->
+  <div id="page-intro" class="page active">
+    <h1>Étape 4 : ETF vs Actions individuelles</h1>
+    <p>Investir dans une seule action, c’est concentrer tout ton risque sur une seule entreprise.<br>
+       Un ETF, lui, regroupe des centaines d’entreprises du monde entier : c’est la diversification.<br><br>
+       Découvre ci-dessous comment 100 € placés en 2000 auraient évolué selon ton choix.</p>
+    <button class="btn" onclick="nextPage('page-simulation')">➡ Découvrir la simulation</button>
   </div>
 
-  <div id="chart"><canvas id="simChart"></canvas></div>
-  <div id="result"></div>
-  <a href="/" class="btn">⬅ Retour au chemin</a>
+  <!-- PAGE 2 : SIMULATION -->
+  <div id="page-simulation" class="page">
+    <h1>Simulation : 100 € investis en 2000</h1>
+    <p>Voici l’évolution sur 25 ans pour trois placements :<br>
+       <b>L’Oréal (gagnant)</b>, <b>Orange (perdant)</b> et un <b>ETF Monde</b> diversifié.</p>
+
+    <div id="chart-container"><canvas id="etfChart"></canvas></div>
+
+    <div id="result"></div>
+
+    <a href="/" class="btn">⬅ Retour au chemin</a>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    let chart;
+    function nextPage(id) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      if (id === "page-simulation") drawChart();
+    }
 
-    function simulate(type) {
-      const years = Array.from({length: 11}, (_, i) => i); // 0 à 10 ans
-      let value = 100;
-      const values = [value];
+    function drawChart() {
+      const ctx = document.getElementById('etfChart').getContext('2d');
 
-      for (let i = 1; i <= 10; i++) {
-        if (type === 'action') {
-          // Volatilité plus forte
-          const change = (Math.random() * 0.4 - 0.2); // -20% à +20%
-          value *= (1 + change);
-        } else {
-          // ETF : volatilité plus faible
-          const change = (Math.random() * 0.14 - 0.04); // -4% à +10%
-          value *= (1 + change);
-        }
-        values.push(value);
-      }
+      // Années de 2000 à 2025
+      const years = Array.from({length: 26}, (_, i) => 2000 + i);
 
-      const final = values[values.length - 1].toFixed(2);
-      const color = type === 'action' ? "#f44336" : "#2196f3";
+      // Données inspirées de la réalité (100 € de départ)
+      const etfWorld = [
+        100,105,95,85,100,110,120,130,90,100,120,140,160,180,200,210,220,250,270,300,320,340,360,380,400,420
+      ];
+      const loreal = [
+        100,120,110,130,160,180,190,220,250,270,300,350,400,450,500,560,600,700,800,900,950,1000,1050,1100,1150,1200
+      ];
+      const orange = [
+        100,90,80,70,60,55,50,45,40,38,36,34,32,30,28,27,26,25,25,26,26,28,30,32,33,35
+      ];
 
-      if (chart) chart.destroy();
-      const ctx = document.getElementById('simChart').getContext('2d');
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: years.map(y => y + " ans"),
-          datasets: [{
-            label: type === 'action' ? "Action individuelle" : "ETF diversifié",
-            data: values,
-            borderColor: color,
-            fill: false,
-            tension: 0.2,
-            borderWidth: 3
-          }]
+      const data = {
+        labels: years,
+        datasets: [
+          { label: 'ETF Monde (MSCI World)', data: etfWorld, borderColor: '#2196F3', borderWidth: 3, fill: false, tension: 0.1 },
+          { label: 'Action gagnante : L’Oréal', data: loreal, borderColor: '#4CAF50', borderWidth: 3, fill: false, tension: 0.1 },
+          { label: 'Action perdante : Orange', data: orange, borderColor: '#f44336', borderWidth: 3, fill: false, tension: 0.1 }
+        ]
+      };
+
+      const options = {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Évolution de 100 € investis depuis 2000', font: { size: 18 } },
+          legend: { position: 'bottom' }
         },
-        options: {
-          scales: {
-            y: { beginAtZero: false },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: { display: true, text: 'Valeur (€)' }
           },
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true }
-          }
+          x: { title: { display: true, text: 'Année' } }
         }
-      });
+      };
+
+      new Chart(ctx, { type: 'line', data, options });
 
       document.getElementById('result').innerHTML = `
-        💰 Valeur finale après 10 ans : <b>${final} €</b><br>
-        ${type === 'action'
-          ? "→ Une action peut exploser... ou s’effondrer."
-          : "→ Un ETF progresse plus lentement, mais beaucoup plus sûrement."
-        }`;
+        📈 <b>L’Oréal</b> : ~ 1200 €<br>
+        🌍 <b>ETF Monde</b> : ~ 420 €<br>
+        📉 <b>Orange</b> : ~ 35 €<br><br>
+        👉 <i>Un seul pari peut te rendre riche... ou te ruiner.  
+        La diversification, elle, construit la richesse lentement mais sûrement.</i>`;
     }
   </script>
-
 </body>
 </html>
