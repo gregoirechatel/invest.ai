@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MechaMind PulleyGen v0.1</title>
+    <style>
+        body { font-family: Arial; margin: 50px; text-align: center; }
+        textarea { width: 400px; height: 100px; }
+        button { margin-top: 10px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>🧠 MechaMind – PulleyGen v0.1</h1>
+    <p>Décris la poulie que tu veux créer :</p>
+    <textarea id="prompt"></textarea><br>
+    <button onclick="sendPrompt()">Générer</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function sendPrompt() {
+            const text = document.getElementById("prompt").value;
+            const response = await fetch("/design", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({text})
+            });
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
