@@ -1,17 +1,24 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from backend.rules import parse_prompt_to_spec, Spec
+
+from backend.rules import parse_prompt_to_spec
 from backend.calc import compute_mechanics
 
-
 app = FastAPI(title="MechaMind PulleyGen v0.1")
+
+# Config template system
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 class PromptIn(BaseModel):
     text: str
 
-@app.get("/")
-def home():
-    return {"message": "Bienvenue sur MechaMind PulleyGen v0.1 🚀"}
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/design")
 def design_from_prompt(data: PromptIn):
